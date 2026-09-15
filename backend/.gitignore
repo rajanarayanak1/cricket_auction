@@ -1,0 +1,6 @@
+node_modules/
+.env
+uploads/logos/*
+!uploads/logos/.gitkeep
+uploads/players/*
+!uploads/players/.gitkeep
