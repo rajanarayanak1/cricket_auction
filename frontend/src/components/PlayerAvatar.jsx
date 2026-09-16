@@ -6,7 +6,7 @@ export default function PlayerAvatar({ player, size = 'sm' }) {
   if (player.photo_path) {
     return (
       <span className={`${sizeClass} avatar-photo`}>
-        <img src={player.photo_path} alt={player.name} />
+        <img src={`${import.meta.env.VITE_API_URL}${player.photo_path}`} alt={player.name} />
       </span>
     );
   }
