@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { getToken, clearToken } from '../utils/auth.js';
 
-const client = axios.create({ baseURL: '/api' });
+const client = axios.create({ baseURL: `${import.meta.env.VITE_API_URL}/api` });
 
 // A separate, uninstrumented instance for the public/unauthenticated
 // endpoints — no Bearer token attached, and no 401-triggers-a-login-redirect
 // interceptor. A public visitor watching a live match was never logged in
 // to begin with, so nothing here should ever bounce them to /login.
-const publicClient = axios.create({ baseURL: '/api/public' });
+const publicClient = axios.create({ baseURL: `${import.meta.env.VITE_API_URL}/api/public` });
 
 client.interceptors.request.use((config) => {
   const token = getToken();
