@@ -50,7 +50,7 @@ export default function TeamList({ teams, players, onDelete, onManageRoster, onE
             <div className="team-card-top">
               <div className="team-logo">
                 {team.logo_path ? (
-                  <img src={team.logo_path} alt={`${team.team_name} logo`} />
+                  <img src={`${import.meta.env.VITE_API_URL}${team.logo_path}`} alt={`${team.team_name} logo`} />
                 ) : (
                   <div className="team-logo-placeholder">🛡️</div>
                 )}
