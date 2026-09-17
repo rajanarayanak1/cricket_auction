@@ -20,7 +20,8 @@ function loadImageDimensions(dataUrl) {
     const img = new Image();
     img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
     img.onerror = reject;
-    img.src = dataUrl;
+    //img.src = dataUrl;
+    img.src = `${import.meta.env.VITE_API_URL}${dataUrl}`;
   });
 }
 
