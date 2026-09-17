@@ -20,8 +20,7 @@ function loadImageDimensions(dataUrl) {
     const img = new Image();
     img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
     img.onerror = reject;
-    //img.src = dataUrl;
-    img.src = `${import.meta.env.VITE_API_URL}${dataUrl}`;
+    img.src = dataUrl;
   });
 }
 
@@ -30,7 +29,8 @@ function loadImageDimensions(dataUrl) {
 // the rest of the report generate rather than blocking the whole download.
 async function addTeamLogo(doc, logoPath) {
   try {
-    const dataUrl = await loadImageAsDataUrl(logoPath);
+    const logoUrl = `${import.meta.env.VITE_API_URL}${logoPath}`;
+    const dataUrl = await loadImageAsDataUrl(logoUrl);
     const { width, height } = await loadImageDimensions(dataUrl);
     const boxSize = 24;
     const scale = Math.min(boxSize / width, boxSize / height);
