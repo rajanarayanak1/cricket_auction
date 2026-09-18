@@ -59,9 +59,9 @@ exports.listCompletedAuctions = async (req, res) => {
   }
 };
 
-// Player list for a completed auction — name/photo/category only, never
-// sold_price or team purse info, since this is shown to unauthenticated
-// visitors before the price is meant to be public.
+// Player list for a completed auction, grouped by the team each player was
+// sold to — name/photo/category/team only, never sold_price or team purse
+// info, since this is shown to unauthenticated visitors.
 exports.getCompletedAuction = async (req, res) => {
   try {
     const [[room]] = await pool.query(
@@ -71,11 +71,30 @@ exports.getCompletedAuction = async (req, res) => {
     if (!room) return res.status(404).json({ message: 'Auction not found' });
 
     const [players] = await pool.query(
-      `SELECT id, name, category, photo_path FROM players WHERE auction_room_id = ? ORDER BY name`,
+      `SELECT p.id, p.name, p.category, p.photo_path,
+              t.id AS team_id, t.team_name, t.logo_path AS team_logo
+       FROM players p
+       LEFT JOIN teams t ON t.id = p.team_id
+       WHERE p.auction_room_id = ?
+       ORDER BY t.team_name IS NULL, t.team_name, p.name`,
       [room.id]
     );
 
-    res.json({ ...room, players });
+    const teamsById = {};
+    const unsold = [];
+    for (const p of players) {
+      const player = { id: p.id, name: p.name, category: p.category, photo_path: p.photo_path };
+      if (p.team_id == null) {
+        unsold.push(player);
+        continue;
+      }
+      if (!teamsById[p.team_id]) {
+        teamsById[p.team_id] = { id: p.team_id, team_name: p.team_name, logo_path: p.team_logo, players: [] };
+      }
+      teamsById[p.team_id].players.push(player);
+    }
+
+    res.json({ ...room, teams: Object.values(teamsById), unsold });
   } catch (err) {
     res.status(500).json({ message: 'Failed to load auction', error: err.message });
   }
