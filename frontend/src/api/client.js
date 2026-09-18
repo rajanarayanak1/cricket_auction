@@ -164,7 +164,9 @@ export const PublicAPI = {
   liveMatches: () => publicClient.get('/live-matches').then((r) => r.data),
   getMatch: (fixtureId) => publicClient.get(`/fixtures/${fixtureId}/match`).then((r) => r.data),
   tournaments: () => publicClient.get('/tournaments').then((r) => r.data),
-  getTournament: (tournamentId) => publicClient.get(`/tournaments/${tournamentId}`).then((r) => r.data)
+  getTournament: (tournamentId) => publicClient.get(`/tournaments/${tournamentId}`).then((r) => r.data),
+  completedAuctions: () => publicClient.get('/completed-auctions').then((r) => r.data),
+  getCompletedAuction: (roomId) => publicClient.get(`/completed-auctions/${roomId}`).then((r) => r.data)
 };
 
 export default client;

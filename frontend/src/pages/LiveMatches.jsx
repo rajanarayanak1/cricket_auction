@@ -24,6 +24,8 @@ export default function LiveMatches() {
   const [tournaments, setTournaments] = useState([]);
   const [tournamentsLoading, setTournamentsLoading] = useState(true);
   const [tournamentTab, setTournamentTab] = useState('ongoing');
+  const [completedAuctions, setCompletedAuctions] = useState([]);
+  const [auctionsLoading, setAuctionsLoading] = useState(true);
 
   // Reached via a ProtectedRoute bounce (or a direct /login visit) — same
   // home page, just with the sign-in modal already open on top of it.
@@ -84,6 +86,13 @@ export default function LiveMatches() {
       cancelled = true;
       clearInterval(interval);
     };
+  }, []);
+
+  useEffect(() => {
+    PublicAPI.completedAuctions()
+      .then(setCompletedAuctions)
+      .catch(() => {})
+      .finally(() => setAuctionsLoading(false));
   }, []);
 
   const ongoingTournaments = tournaments.filter((t) => !t.is_completed);
@@ -228,6 +237,36 @@ export default function LiveMatches() {
                     🏆 {t.winner_team_name} won{t.player_of_tournament_name ? ` · 🌟 ${t.player_of_tournament_name}` : ''}
                   </p>
                 )}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="tournament-section" style={{ marginTop: 36 }}>
+        <h3 style={{ margin: 0 }}>🏏 Completed Auctions</h3>
+
+        {auctionsLoading ? (
+          <div className="skeleton-grid">
+            <div className="skeleton-card" />
+            <div className="skeleton-card" />
+          </div>
+        ) : completedAuctions.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">🏏</div>
+            <h4>No completed auctions yet</h4>
+            <p className="hint-text">Once an auction wraps up, its player list will show up here.</p>
+          </div>
+        ) : (
+          <div className="tournament-grid">
+            {completedAuctions.map((a) => (
+              <div key={a.id} className="tournament-card" onClick={() => navigate(`/auctions/${a.id}`)}>
+                <div className="tournament-card-header">
+                  <h4>{a.name}</h4>
+                  <span className="badge badge-completed">✅ Completed</span>
+                </div>
+                <p className="hint-text">{new Date(a.auction_date).toLocaleDateString()}</p>
+                <p className="hint-text">{a.num_teams} teams · {a.player_count} players</p>
               </div>
             ))}
           </div>

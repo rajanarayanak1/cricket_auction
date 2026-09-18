@@ -8,6 +8,7 @@ import Scorecard from './pages/Scorecard.jsx';
 import LiveMatches from './pages/LiveMatches.jsx';
 import PublicMatchView from './pages/PublicMatchView.jsx';
 import PublicTournamentView from './pages/PublicTournamentView.jsx';
+import PublicAuctionView from './pages/PublicAuctionView.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/" element={isAuthenticated() ? <Navigate to="/dashboard" replace /> : <LiveMatches />} />
           <Route path="/live/:fixtureId" element={<PublicMatchView />} />
           <Route path="/tournaments/:tournamentId" element={<PublicTournamentView />} />
+          <Route path="/auctions/:roomId" element={<PublicAuctionView />} />
           <Route
             path="/profile"
             element={

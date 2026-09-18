@@ -1,7 +1,8 @@
 import { getCategoryMeta, getInitials } from '../utils/categoryMeta.js';
 
 export default function PlayerAvatar({ player, size = 'sm' }) {
-  const sizeClass = size === 'xl' ? 'sold-card-avatar' : size === 'lg' ? 'current-player-avatar' : 'avatar';
+  const sizeClass =
+    size === 'xl' ? 'sold-card-avatar' : size === 'lg' ? 'current-player-avatar' : size === 'tile' ? 'player-tile-avatar' : 'avatar';
 
   if (player.photo_path) {
     return (
