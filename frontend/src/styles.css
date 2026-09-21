@@ -3515,7 +3515,52 @@ tbody tr:last-child td {
 
 /* ---------- Responsive ---------- */
 
+.floating-score-bubble {
+  display: none;
+}
+
 @media (max-width: 640px) {
+  /* Deliberately in the accent gold, not the primary blue — the page's own
+     live-score-card already fills the top of this page with a navy-blue
+     gradient, and a same-blue bubble would blend straight into it once it
+     scrolls underneath. Gold reads clearly over that card, over plain white
+     cards further down, and in dark mode. Pinned to a top corner (not the
+     bottom) so it never sits over the ball-entry-panel's buttons, which run
+     the full width of the page and can appear anywhere down the scroll. */
+  .floating-score-bubble {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: fixed;
+    top: 82px;
+    right: 10px;
+    z-index: 30;
+    max-width: 130px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: #402a02;
+    box-shadow: var(--shadow-md);
+  }
+
+  .floating-score-bubble .live-dot {
+    background: #402a02;
+    box-shadow: 0 0 0 0 rgba(64, 42, 2, 0.5);
+  }
+
+  .floating-score-value {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .floating-score-overs {
+    font-size: 11px;
+    color: rgba(64, 42, 2, 0.75);
+    white-space: nowrap;
+  }
+
   .app-header {
     padding: 14px 18px;
   }

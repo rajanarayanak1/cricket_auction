@@ -486,6 +486,18 @@ export default function Scorecard() {
     <div className="page">
       <CelebrationOverlay celebration={celebration} />
 
+      {!isCompleted && (
+        <div className="floating-score-bubble">
+          <span className="live-dot" />
+          <span className="floating-score-value">
+            {currentInnings.total_runs}/{currentInnings.total_wickets}
+          </span>
+          <span className="floating-score-overs">
+            {oversDisplay(currentInnings.total_balls)} ov
+          </span>
+        </div>
+      )}
+
       <button
         className="link-btn back-link"
         onClick={() => navigate(`/rooms/${roomId}/tournaments/${match.tournament_id}`, { state: { tab: 'fixture' } })}
