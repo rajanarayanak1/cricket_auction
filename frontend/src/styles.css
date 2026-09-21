@@ -3529,18 +3529,25 @@ tbody tr:last-child td {
      the full width of the page and can appear anywhere down the scroll. */
   .floating-score-bubble {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 3px;
     position: fixed;
     top: 82px;
     right: 10px;
     z-index: 30;
-    max-width: 130px;
-    padding: 7px 12px;
-    border-radius: 999px;
+    max-width: 140px;
+    padding: 7px 14px;
+    border-radius: 16px;
     background: linear-gradient(135deg, var(--accent), var(--accent-dark));
     color: #402a02;
     box-shadow: var(--shadow-md);
+  }
+
+  .floating-score-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .floating-score-bubble .live-dot {
@@ -3559,6 +3566,17 @@ tbody tr:last-child td {
     font-size: 11px;
     color: rgba(64, 42, 2, 0.75);
     white-space: nowrap;
+  }
+
+  .floating-score-required {
+    font-size: 11px;
+    font-weight: 700;
+    color: #402a02;
+    white-space: nowrap;
+    border-top: 1px solid rgba(64, 42, 2, 0.25);
+    padding-top: 3px;
+    width: 100%;
+    text-align: center;
   }
 
   .app-header {

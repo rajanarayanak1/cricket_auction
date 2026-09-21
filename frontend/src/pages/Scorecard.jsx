@@ -284,6 +284,10 @@ export default function Scorecard() {
   const isSuperOver = currentInnings.innings_number > 2;
   const superOverNumber = isSuperOver ? Math.ceil((currentInnings.innings_number - 2) / 2) : 0;
 
+  const isChasing = currentInnings.innings_number % 2 === 0 && currentInnings.target != null && !currentInnings.is_completed;
+  const requiredRuns = isChasing ? Math.max(currentInnings.target - currentInnings.total_runs, 0) : null;
+  const ballsLeft = isChasing ? Math.max(currentInnings.overs_limit * 6 - currentInnings.total_balls, 0) : null;
+
   // is_completed comes back from MySQL as a tinyint (0/1), not a real
   // boolean — without the !! this whole && chain can evaluate to the bare
   // number 0 instead of false, and every downstream "needsX && <jsx>" below
@@ -488,13 +492,18 @@ export default function Scorecard() {
 
       {!isCompleted && (
         <div className="floating-score-bubble">
-          <span className="live-dot" />
-          <span className="floating-score-value">
-            {currentInnings.total_runs}/{currentInnings.total_wickets}
-          </span>
-          <span className="floating-score-overs">
-            {oversDisplay(currentInnings.total_balls)} ov
-          </span>
+          <div className="floating-score-row">
+            <span className="live-dot" />
+            <span className="floating-score-value">
+              {currentInnings.total_runs}/{currentInnings.total_wickets}
+            </span>
+            <span className="floating-score-overs">
+              {oversDisplay(currentInnings.total_balls)} ov
+            </span>
+          </div>
+          {isChasing && (
+            <div className="floating-score-required">{requiredRuns} from {ballsLeft}</div>
+          )}
         </div>
       )}
 
@@ -540,10 +549,9 @@ export default function Scorecard() {
               </div>
               {!!currentInnings.free_hit && <div className="free-hit-badge">🏏 FREE HIT</div>}
             </div>
-            {currentInnings.innings_number % 2 === 0 && currentInnings.target != null && !currentInnings.is_completed && (
+            {isChasing && (
               <div className="live-score-target hint-text">
-                Target {currentInnings.target} · Need {Math.max(currentInnings.target - currentInnings.total_runs, 0)} runs
-                from {Math.max(currentInnings.overs_limit * 6 - currentInnings.total_balls, 0)} balls
+                Target {currentInnings.target} · Need {requiredRuns} runs from {ballsLeft} balls
               </div>
             )}
           </div>
