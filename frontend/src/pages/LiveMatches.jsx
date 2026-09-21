@@ -8,7 +8,7 @@ import { isAuthenticated } from '../utils/auth.js';
 function TeamBadge({ name, logo }) {
   return (
     <div className="live-tile-team">
-      <span className="fixture-team-logo">{logo ? <img src={logo} alt="" /> : '🛡️'}</span>
+      <span className="fixture-team-logo">{logo ? <img src={`${import.meta.env.VITE_API_URL}${logo}`} alt="" /> : '🛡️'}</span>
       <span className="live-tile-team-name">{name}</span>
     </div>
   );

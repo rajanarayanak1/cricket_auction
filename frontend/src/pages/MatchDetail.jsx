@@ -112,14 +112,14 @@ export default function MatchDetail() {
         <div className="match-detail-teams">
           <div className="match-detail-team">
             <span className="fixture-team-logo fixture-team-logo-lg">
-              {fixture.team1_logo ? <img src={fixture.team1_logo} alt={`${team1Label} logo`} /> : '🛡️'}
+              {fixture.team1_logo ? <img src={`${import.meta.env.VITE_API_URL}${fixture.team1_logo}`} alt={`${team1Label} logo`} /> : '🛡️'}
             </span>
             <h3 className={!fixture.team1_name ? 'fixture-team-tbd-heading' : ''}>{team1Label}</h3>
           </div>
           <span className="match-detail-vs">VS</span>
           <div className="match-detail-team">
             <span className="fixture-team-logo fixture-team-logo-lg">
-              {fixture.team2_logo ? <img src={fixture.team2_logo} alt={`${team2Label} logo`} /> : '🛡️'}
+              {fixture.team2_logo ? <img src={`${import.meta.env.VITE_API_URL}${fixture.team2_logo}`} alt={`${team2Label} logo`} /> : '🛡️'}
             </span>
             <h3 className={!fixture.team2_name ? 'fixture-team-tbd-heading' : ''}>{team2Label}</h3>
           </div>

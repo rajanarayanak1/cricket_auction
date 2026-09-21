@@ -9,7 +9,7 @@ function FixtureTeamBadge({ name, logo, placeholder }) {
   return (
     <div className={`fixture-team ${!name ? 'fixture-team-tbd' : ''}`}>
       <span className="fixture-team-logo">
-        {logo ? <img src={logo} alt={`${label} logo`} /> : '🛡️'}
+        {logo ? <img src={`${import.meta.env.VITE_API_URL}${logo}`} alt={`${label} logo`} /> : '🛡️'}
       </span>
       <span className="fixture-team-name">{label}</span>
     </div>
@@ -226,7 +226,7 @@ export default function TournamentDetail() {
                         <td>
                           <div className="points-table-team-cell">
                             <span className="points-table-logo">
-                              {row.logo_path ? <img src={row.logo_path} alt="" /> : '🛡️'}
+                              {row.logo_path ? <img src={`${import.meta.env.VITE_API_URL}${row.logo_path}`} alt="" /> : '🛡️'}
                             </span>
                             {row.team_name}
                           </div>

@@ -522,14 +522,14 @@ export default function Scorecard() {
         <div className="match-detail-teams">
           <div className="match-detail-team">
             <span className="fixture-team-logo fixture-team-logo-lg">
-              {match.team1_logo ? <img src={match.team1_logo} alt="" /> : '🛡️'}
+              {match.team1_logo ? <img src={`${import.meta.env.VITE_API_URL}${match.team1_logo}`} alt="" /> : '🛡️'}
             </span>
             <h3>{match.team1_name}</h3>
           </div>
           <span className="match-detail-vs">VS</span>
           <div className="match-detail-team">
             <span className="fixture-team-logo fixture-team-logo-lg">
-              {match.team2_logo ? <img src={match.team2_logo} alt="" /> : '🛡️'}
+              {match.team2_logo ? <img src={`${import.meta.env.VITE_API_URL}${match.team2_logo}`} alt="" /> : '🛡️'}
             </span>
             <h3>{match.team2_name}</h3>
           </div>

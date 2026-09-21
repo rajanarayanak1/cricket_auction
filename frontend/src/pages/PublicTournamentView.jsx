@@ -7,7 +7,7 @@ function FixtureTeamBadge({ name, logo, placeholder }) {
   return (
     <div className={`fixture-team ${!name ? 'fixture-team-tbd' : ''}`}>
       <span className="fixture-team-logo">
-        {logo ? <img src={logo} alt={`${label} logo`} /> : '🛡️'}
+        {logo ? <img src={`${import.meta.env.VITE_API_URL}${logo}`} alt={`${label} logo`} /> : '🛡️'}
       </span>
       <span className="fixture-team-name">{label}</span>
     </div>
