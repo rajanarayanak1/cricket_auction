@@ -60,7 +60,7 @@ export default function StartMatchModal({ team1, team2, onClose, onStart }) {
                 onClick={() => setTossWinnerId(String(t.id))}
               >
                 <span className="trade-team-chip-logo">
-                  {t.logo_path ? <img src={t.logo_path} alt="" /> : '🛡️'}
+                  {t.logo_path ? <img src={`${import.meta.env.VITE_API_URL}${t.logo_path}`} alt="" /> : '🛡️'}
                 </span>
                 {t.team_name}
               </button>
