@@ -138,27 +138,35 @@ function NewBatsmanForm({ players, onSubmit }) {
     }
   };
 
+  // No close/cancel affordance — a batsman must be picked before scoring can
+  // continue, so this popup is deliberately not dismissable.
   return (
-    <div className="card">
-      <div className="card-title-row" style={{ marginBottom: 14 }}>
-        <span className="card-icon-badge">🏃</span>
-        <h3 style={{ margin: 0 }}>Wicket! Select the Next Batsman</h3>
+    <div className="modal-overlay">
+      <div className="modal-card next-player-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <div className="card-title-row">
+            <span className="card-icon-badge">🏃</span>
+            <h3 style={{ margin: 0 }}>Wicket! Select the Next Batsman</h3>
+          </div>
+        </div>
+        <div className="form-grid">
+          <label>
+            Next Batsman
+            <select value={playerId} onChange={(e) => setPlayerId(e.target.value)} autoFocus>
+              <option value="">Select…</option>
+              {players.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+        {error && <p className="error-text" style={{ marginTop: 10 }}>{error}</p>}
+        <div className="modal-footer-actions">
+          <button className="btn btn-primary btn-block" onClick={handleSubmit} disabled={submitting}>
+            {submitting ? 'Saving…' : '▶ Send In'}
+          </button>
+        </div>
       </div>
-      <div className="form-grid">
-        <label>
-          Next Batsman
-          <select value={playerId} onChange={(e) => setPlayerId(e.target.value)}>
-            <option value="">Select…</option>
-            {players.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
-          </select>
-        </label>
-      </div>
-      {error && <p className="error-text" style={{ marginTop: 10 }}>{error}</p>}
-      <button className="btn btn-primary" style={{ marginTop: 14 }} onClick={handleSubmit} disabled={submitting}>
-        {submitting ? 'Saving…' : '▶ Send In'}
-      </button>
     </div>
   );
 }
@@ -183,27 +191,35 @@ function NewBowlerForm({ players, onSubmit }) {
     }
   };
 
+  // Same as the batsman popup — no close/cancel, a bowler must be picked
+  // before the next over can start.
   return (
-    <div className="card">
-      <div className="card-title-row" style={{ marginBottom: 14 }}>
-        <span className="card-icon-badge">🎯</span>
-        <h3 style={{ margin: 0 }}>Over Complete — Select the Next Bowler</h3>
+    <div className="modal-overlay">
+      <div className="modal-card next-player-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <div className="card-title-row">
+            <span className="card-icon-badge">🎯</span>
+            <h3 style={{ margin: 0 }}>Over Complete — Select the Next Bowler</h3>
+          </div>
+        </div>
+        <div className="form-grid">
+          <label>
+            Next Bowler
+            <select value={playerId} onChange={(e) => setPlayerId(e.target.value)} autoFocus>
+              <option value="">Select…</option>
+              {players.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+        {error && <p className="error-text" style={{ marginTop: 10 }}>{error}</p>}
+        <div className="modal-footer-actions">
+          <button className="btn btn-primary btn-block" onClick={handleSubmit} disabled={submitting}>
+            {submitting ? 'Saving…' : '▶ Start Over'}
+          </button>
+        </div>
       </div>
-      <div className="form-grid">
-        <label>
-          Next Bowler
-          <select value={playerId} onChange={(e) => setPlayerId(e.target.value)}>
-            <option value="">Select…</option>
-            {players.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
-          </select>
-        </label>
-      </div>
-      {error && <p className="error-text" style={{ marginTop: 10 }}>{error}</p>}
-      <button className="btn btn-primary" style={{ marginTop: 14 }} onClick={handleSubmit} disabled={submitting}>
-        {submitting ? 'Saving…' : '▶ Start Over'}
-      </button>
     </div>
   );
 }
@@ -824,7 +840,7 @@ export default function Scorecard() {
                 )}
 
                 <button className="btn btn-primary btn-block" onClick={handleAddBall} disabled={ballSubmitting}>
-                  {ballSubmitting ? 'Saving…' : '✅ Add Ball'}
+                  {ballSubmitting ? 'Saving…' : '✅ Save'}
                 </button>
               </div>
             </>
