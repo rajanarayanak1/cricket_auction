@@ -6,11 +6,19 @@ export default function CreateFixtureModal({ teamCount, mode = 'create', onClose
   const [name, setName] = useState('');
   const [format, setFormat] = useState('round_robin');
   const [maxTeamsPerPool, setMaxTeamsPerPool] = useState('');
+  const [skipLeague, setSkipLeague] = useState(false);
+  const [leagueMatchCount, setLeagueMatchCount] = useState('1');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const poolEligible = teamCount > POOL_MIN_TEAMS;
   const isCreate = mode === 'create';
+  // With only 2 teams a normal round-robin schedule is just the same single
+  // match every time, so this offers the two shapes that actually make sense
+  // for a 2-team tournament instead: a direct final, or a best-of-N league
+  // stage first. Scoped to "create" only — regenerating an in-progress
+  // tournament's fixtures isn't where this choice belongs.
+  const showTwoTeamOptions = isCreate && format === 'round_robin' && teamCount === 2;
 
   const handleSubmit = async () => {
     setError('');
@@ -32,12 +40,22 @@ export default function CreateFixtureModal({ teamCount, mode = 'create', onClose
       }
     }
 
+    let matchCount = 1;
+    if (showTwoTeamOptions && !skipLeague) {
+      matchCount = Number(leagueMatchCount);
+      if (!leagueMatchCount || !Number.isInteger(matchCount) || matchCount < 1) {
+        setError('Enter a whole number of at least 1 for the number of league matches.');
+        return;
+      }
+    }
+
     setSubmitting(true);
     try {
       await onCreate({
         ...(isCreate ? { name: name.trim() } : {}),
         type: format,
-        ...(format === 'pool' ? { max_teams_per_pool: Number(maxTeamsPerPool) } : {})
+        ...(format === 'pool' ? { max_teams_per_pool: Number(maxTeamsPerPool) } : {}),
+        ...(showTwoTeamOptions ? { skip_league: skipLeague, league_match_count: matchCount } : {})
       });
     } catch (err) {
       setError(err.response?.data?.message || `Failed to ${isCreate ? 'create tournament' : 'regenerate fixtures'}.`);
@@ -111,6 +129,35 @@ export default function CreateFixtureModal({ teamCount, mode = 'create', onClose
             </div>
           </label>
         </div>
+
+        {showTwoTeamOptions && (
+          <div className="two-team-format-section" style={{ marginTop: 18 }}>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={skipLeague}
+                onChange={(e) => setSkipLeague(e.target.checked)}
+              />
+              Skip league match — go straight to the Final
+            </label>
+            <p className="hint-text" style={{ marginTop: 6 }}>
+              
+            </p>
+
+            {!skipLeague && (
+              <label className="field" style={{ marginTop: 14 }}>
+                Number of League Matches
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="e.g. 1"
+                  value={leagueMatchCount}
+                  onChange={(e) => setLeagueMatchCount(e.target.value)}
+                />
+              </label>
+            )}
+          </div>
+        )}
 
         {format === 'pool' && (
           <label className="field" style={{ marginTop: 4 }}>

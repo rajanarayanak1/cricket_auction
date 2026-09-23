@@ -40,7 +40,7 @@ exports.getTournament = async (req, res) => {
 exports.createTournament = async (req, res) => {
   try {
     const { roomId } = req.params;
-    const { name, type, max_teams_per_pool } = req.body;
+    const { name, type, max_teams_per_pool, skip_league, league_match_count } = req.body;
 
     const trimmedName = (name || '').trim();
     if (!trimmedName) return res.status(400).json({ message: 'Tournament name is required' });
@@ -65,7 +65,10 @@ exports.createTournament = async (req, res) => {
 
     const [teams] = await pool.query('SELECT id FROM teams WHERE auction_room_id = ?', [roomId]);
     const teamIds = teams.map((t) => t.id);
-    const rows = buildFixtureRows(teamIds, type, max_teams_per_pool);
+    const rows = buildFixtureRows(teamIds, type, max_teams_per_pool, {
+      skipLeague: !!skip_league,
+      leagueMatchCount: Number(league_match_count) || 1
+    });
 
     const conn = await pool.getConnection();
     let tournamentId;

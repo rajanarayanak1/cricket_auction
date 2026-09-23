@@ -14,7 +14,14 @@ function httpError(status, message) {
 // insert — shared by "create a new tournament" (tournamentController) and
 // "regenerate this tournament's fixtures" (fixtureController), so the two
 // flows can never drift apart on validation rules.
-function buildFixtureRows(teamIds, type, maxTeamsPerPool) {
+//
+// `twoTeamOptions` only ever applies to the round_robin/2-team case (it's
+// simply ignored otherwise): a plain round-robin schedule between exactly 2
+// teams is just the same single match every time, which is a poor default
+// for a 2-team tournament, so callers may instead ask to either skip the
+// league stage entirely (a direct Final) or repeat the pairing N times
+// before the Final.
+function buildFixtureRows(teamIds, type, maxTeamsPerPool, twoTeamOptions = {}) {
   if (!['round_robin', 'pool'].includes(type)) {
     throw httpError(400, 'type must be "round_robin" or "pool"');
   }
@@ -24,7 +31,24 @@ function buildFixtureRows(teamIds, type, maxTeamsPerPool) {
 
   const rows = [];
 
-  if (type === 'round_robin') {
+  if (type === 'round_robin' && teamIds.length === 2 && twoTeamOptions.skipLeague) {
+    // No league stage at all — the two teams are already known, so the Final
+    // gets real team ids up front instead of the usual 'Rank 1'/'Rank 2'
+    // placeholders (there's no standings table to resolve those against).
+    rows.push({
+      pool_name: null, match_order: 1, stage: 'final',
+      team1_id: teamIds[0], team2_id: teamIds[1], team1_placeholder: null, team2_placeholder: null
+    });
+  } else if (type === 'round_robin' && teamIds.length === 2 && twoTeamOptions.leagueMatchCount > 1) {
+    const count = twoTeamOptions.leagueMatchCount;
+    if (!Number.isInteger(count)) {
+      throw httpError(400, 'Number of league matches must be a whole number');
+    }
+    for (let i = 0; i < count; i++) {
+      rows.push({ pool_name: null, match_order: i + 1, stage: 'league', team1_id: teamIds[0], team2_id: teamIds[1] });
+    }
+    rows.push(...buildKnockoutRows(teamIds.length));
+  } else if (type === 'round_robin') {
     const matches = scheduleAvoidingBackToBack(generateRoundRobinPairs(teamIds));
     matches.forEach((match, i) => rows.push({ pool_name: null, match_order: i + 1, stage: 'league', ...match }));
     rows.push(...buildKnockoutRows(teamIds.length));
