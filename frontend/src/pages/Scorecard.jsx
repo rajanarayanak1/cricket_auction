@@ -663,10 +663,8 @@ export default function Scorecard() {
                             setByeType('none');
                             setByeRuns(1);
                             setOverthrowEnabled(false);
-                            if (wicketType === 'run_out') setWicketType('none');
                           }
                         }}
-                        disabled={wicketType === 'run_out'}
                       >
                         {opt.label}
                       </button>
@@ -674,7 +672,7 @@ export default function Scorecard() {
                   </div>
                 </div>
 
-                {extraType !== 'none' && (
+                {extraType !== 'none' && wicketType !== 'run_out' && (
                   <div className="ball-entry-row">
                     <span className="ball-entry-label">+ Runs Taken</span>
                     <div className="ball-entry-options">
@@ -809,7 +807,9 @@ export default function Scorecard() {
                           onClick={() => {
                             setWicketType(opt.value);
                             if (opt.value === 'run_out') {
-                              setExtraType('none');
+                              // A wide/no-ball can stay selected alongside a
+                              // run out; the runs completed are added on top
+                              // of its 1 penalty run.
                               setSelectedExtraRuns(0);
                               setByeType('none');
                               setByeRuns(1);

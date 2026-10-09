@@ -421,8 +421,8 @@ function parseBallDetail({
   if (!['none', 'out', 'run_out'].includes(wicketType)) {
     throw httpError(400, 'wicket_type must be "none", "out" or "run_out"');
   }
-  if (wicketType === 'run_out' && (isExtra || isBye)) {
-    throw httpError(400, 'A run out on a Wide/No Ball or Bye/Leg Bye delivery is not supported — record it as a standard wicket instead');
+  if (wicketType === 'run_out' && isBye) {
+    throw httpError(400, 'A run out on a Bye/Leg Bye delivery is not supported — record it as a standard wicket instead');
   }
   if (wicketType === 'run_out') {
     if (!['striker', 'non_striker'].includes(run_out_player)) {
@@ -436,7 +436,10 @@ function parseBallDetail({
 
   const runsValue = Number(runs) || 0;
   if (runsValue < 0 || runsValue > 6) throw httpError(400, 'Run values must be between 0 and 6');
-  const extraRunsValue = Number(extra_runs) || 0;
+  // On a wide/no-ball run out, the runs completed are the "+ runs" on top of
+  // the 1 penalty run (wide 2 completed => 3 to the team), and they are extras
+  // rather than batting runs, same as any other wide/no-ball.
+  const extraRunsValue = wicketType === 'run_out' && isExtra ? Number(run_out_runs) : (Number(extra_runs) || 0);
   if (extraRunsValue < 0 || extraRunsValue > 6) throw httpError(400, 'Run values must be between 0 and 6');
   const byeRunsValue = Number(bye_runs) || 0;
   if (isBye && (byeRunsValue < 1 || byeRunsValue > 6)) {
@@ -475,7 +478,7 @@ function parseBallDetail({
   // Runs credited to whoever is on strike — a primary run out still credits
   // the runs actually completed (they were off the bat), but over-throw runs
   // never are (they're purely a fielding error, same as a bye).
-  const battingRuns = wicketType === 'run_out'
+  const battingRuns = wicketType === 'run_out' && !isExtra
     ? Number(run_out_runs)
     : (isExtra || isBye ? 0 : runsValue);
 

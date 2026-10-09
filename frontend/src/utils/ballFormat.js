@@ -4,8 +4,9 @@
 
 export function ballLabel(ball) {
   if (ball.is_wicket && !ball.is_run_out) return 'W';
-  if (ball.extra_type === 'wide') return `${1 + ball.extra_runs}wd`;
-  if (ball.extra_type === 'no_ball') return `${1 + ball.extra_runs}nb`;
+  const roSuffix = ball.is_run_out ? ' RO' : '';
+  if (ball.extra_type === 'wide') return `${1 + ball.extra_runs}wd${roSuffix}`;
+  if (ball.extra_type === 'no_ball') return `${1 + ball.extra_runs}nb${roSuffix}`;
   let label = ball.bye_type === 'bye' ? `${ball.bye_runs}b` : ball.bye_type === 'leg_bye' ? `${ball.bye_runs}lb` : String(ball.runs);
   if (ball.overthrow_runs > 0) label += `+${ball.overthrow_runs}`;
   if (ball.is_run_out) label += ' RO';
